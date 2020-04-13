@@ -1,8 +1,8 @@
-site_name: Analysis of Lending Club Loan Data
+site_name: Analysis of Covid19 survey data
 nav:
     - Home: 'index.md'
-    - Vizualizing Data: 'LCDA_Part1.md'
-    - Clustering & PCA: 'LCDA_Part2.md'
-    - Building Models: 'LCDA_Part3.md'
+ 
+    - Preprocessing: 'COVID.md'
+    
     
 

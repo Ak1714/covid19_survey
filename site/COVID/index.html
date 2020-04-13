@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>COVID - Analysis of Lending Club Loan Data</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Analysis of Lending Club Loan Data</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../LCDA_Part1.md" class="nav-link">Vizualizing Data</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../LCDA_Part2.md" class="nav-link">Clustering & PCA</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../LCDA_Part3.md" class="nav-link">Building Models</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="2"><a href="#covid19-survey-analysis" class="nav-link">Covid19 Survey Analysis</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h2 id="covid19-survey-analysis">Covid19 Survey Analysis</h2>
+<pre><code class="python"># Importing pandas + numpy and reading the survey data into the dataframe - covidDF
+
+import pandas as pd
+import numpy as np
+
+covidDF = pd.read_csv(&quot;COVID-19 Survey (Responses) - Form responses 1.csv&quot;)
+covidDF.head()
+</code></pre>
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Timestamp</th>
+      <th>What is your occupation?</th>
+      <th>Where do you spend most of your free time?</th>
+      <th>How much time do you spend on streaming services?</th>
+      <th>How much time do you spend on gaming?</th>
+      <th>How much time do you spend on social media?</th>
+      <th>What are you most worried about during this time?</th>
+      <th>ONE word that describes your mood right now.</th>
+      <th>Where are you located ?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>29/03/2020 00:22:00</td>
+      <td>Professional</td>
+      <td>Other (Gardening, Cooking, Sleeping)</td>
+      <td>&gt; 3 hours</td>
+      <td>1 - 3 hours</td>
+      <td>&lt; 1 hour</td>
+      <td>Family, Economy, Being stuck at home</td>
+      <td>Happy</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>29/03/2020 00:26:52</td>
+      <td>Student</td>
+      <td>Online Courses (Coursera, LinkedIn Learning, U...</td>
+      <td>&lt; 1 hour</td>
+      <td>&lt; 1 hour</td>
+      <td>1 - 3 hours</td>
+      <td>Job, Family, Being stuck at home</td>
+      <td>Irritated</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>29/03/2020 00:37:44</td>
+      <td>Professional</td>
+      <td>Online Courses (Coursera, LinkedIn Learning, U...</td>
+      <td>&gt; 3 hours</td>
+      <td>&lt; 1 hour</td>
+      <td>1 - 3 hours</td>
+      <td>Job</td>
+      <td>Bored</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>29/03/2020 00:38:23</td>
+      <td>Home-maker</td>
+      <td>Social Media (Twitter, Instagram, Facebook)</td>
+      <td>&lt; 1 hour</td>
+      <td>&lt; 1 hour</td>
+      <td>1 - 3 hours</td>
+      <td>Family</td>
+      <td>Depression</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>29/03/2020 00:38:35</td>
+      <td>Professional</td>
+      <td>Streaming services (Netflix, Amazon Prime, You...</td>
+      <td>&gt; 3 hours</td>
+      <td>&lt; 1 hour</td>
+      <td>&gt; 3 hours</td>
+      <td>Job, Family</td>
+      <td>Aimless</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<pre><code class="python"># Checking if the dataframe has null values
+
+covidDF.isnull().sum() #displays entire dataframe with null and non-null values
+</code></pre>
+
+<pre><code>Timestamp                                             0
+What is your occupation?                              0
+Where do you spend most of your free time?            0
+How much time do you spend on streaming services?     4
+How much time do you spend on gaming?                 9
+How much time do you spend on social media?           3
+What are you most worried about during this time?     0
+ONE word that describes your mood right now.          0
+Where are you located ?                              65
+dtype: int64
+</code></pre>
+<pre><code class="python">covidDF.describe() # an overview
+</code></pre>
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Timestamp</th>
+      <th>What is your occupation?</th>
+      <th>Where do you spend most of your free time?</th>
+      <th>How much time do you spend on streaming services?</th>
+      <th>How much time do you spend on gaming?</th>
+      <th>How much time do you spend on social media?</th>
+      <th>What are you most worried about during this time?</th>
+      <th>ONE word that describes your mood right now.</th>
+      <th>Where are you located ?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>count</td>
+      <td>114</td>
+      <td>114</td>
+      <td>114</td>
+      <td>110</td>
+      <td>105</td>
+      <td>111</td>
+      <td>114</td>
+      <td>114</td>
+      <td>49</td>
+    </tr>
+    <tr>
+      <td>unique</td>
+      <td>114</td>
+      <td>7</td>
+      <td>6</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>31</td>
+      <td>87</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>top</td>
+      <td>29/03/2020 11:26:31</td>
+      <td>Professional</td>
+      <td>Other (Gardening, Cooking, Sleeping)</td>
+      <td>1 - 3 hours</td>
+      <td>&lt; 1 hour</td>
+      <td>1 - 3 hours</td>
+      <td>Family</td>
+      <td>Bored</td>
+      <td>USA</td>
+    </tr>
+    <tr>
+      <td>freq</td>
+      <td>1</td>
+      <td>64</td>
+      <td>34</td>
+      <td>57</td>
+      <td>88</td>
+      <td>55</td>
+      <td>31</td>
+      <td>9</td>
+      <td>25</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<pre><code class="python"># The last column 'ONE word that describes your mood right now.' is a free text field
+# However some respondents have replied in more than one word. We can edit this field by grouping similar words or feelings into a single word
+
+import re # RegEx
+
+# creating a dataframe with only the required column which can be later merger with the original dataframe CovidDF
+one_word = pd.DataFrame(covidDF[&quot;ONE word that describes your mood right now.&quot;]).astype(str)
+
+# The re.match function returns a 'None' if there is no match
+for i in one_word.index: 
+    if re.match( r'(.*)([Bb]or)(.*)', str(one_word.iloc[i][0])) != None:
+        one_word.iloc[i] = &quot;Bored&quot;
+
+</code></pre>
+
+<pre><code class="python">one_word # Let's have a look at the new dataframe
+</code></pre>
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ONE word that describes your mood right now.</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>Happy</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Irritated</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Bored</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Depression</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Aimless</td>
+    </tr>
+    <tr>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <td>109</td>
+      <td>Worried</td>
+    </tr>
+    <tr>
+      <td>110</td>
+      <td>Okay</td>
+    </tr>
+    <tr>
+      <td>111</td>
+      <td>Bored</td>
+    </tr>
+    <tr>
+      <td>112</td>
+      <td>Juggling</td>
+    </tr>
+    <tr>
+      <td>113</td>
+      <td>Going with the flow</td>
+    </tr>
+  </tbody>
+</table>
+<p>114 rows × 1 columns</p>
+</div>
+
+<pre><code class="python"># Repeating the same steps to look for words that might have the same  other words that might 
+
+for i in one_word.index: 
+    if re.match( r'(.*)([cC]onc)(.*)', str(one_word.iloc[i][0])) != None:
+        one_word.iloc[i] = &quot;Concerned&quot;
+    elif re.match( r'(.*)([wW]orr)(.*)', str(one_word.iloc[i][0])) != None:
+        one_word.iloc[i] = &quot;Worried&quot;
+    elif re.match( r'(.*)([sS]car)(.*)', str(one_word.iloc[i][0])) != None:
+        one_word.iloc[i] = &quot;Scared&quot;
+
+one_word
+</code></pre>
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ONE word that describes your mood right now.</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>Happy</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Irritated</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Bored</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Depression</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Aimless</td>
+    </tr>
+    <tr>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <td>109</td>
+      <td>Worried</td>
+    </tr>
+    <tr>
+      <td>110</td>
+      <td>Okay</td>
+    </tr>
+    <tr>
+      <td>111</td>
+      <td>Bored</td>
+    </tr>
+    <tr>
+      <td>112</td>
+      <td>Juggling</td>
+    </tr>
+    <tr>
+      <td>113</td>
+      <td>Going with the flow</td>
+    </tr>
+  </tbody>
+</table>
+<p>114 rows × 1 columns</p>
+</div>
+
+<pre><code class="python">for i in one_word.index:
+    #print(one_word.iloc[i][0])
+    #print(re.match(r'B.*', str(one_word.iloc[i][0])))    
+    if re.match( r'(.*)([gG]oo)(.*)', str(one_word.iloc[i][0])) != None:
+        #print(one_word.iloc[i][0])
+        one_word.iloc[i] = &quot;Good&quot;
+    elif re.match( r'(.*)([sS]ad)(.*)', str(one_word.iloc[i][0])) != None:
+        #print(one_word.iloc[i][0])
+        one_word.iloc[i] = &quot;Sad&quot;
+
+
+one_word
+</code></pre>
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ONE word that describes your mood right now.</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>Happy</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Irritated</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Bored</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Depression</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Aimless</td>
+    </tr>
+    <tr>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <td>109</td>
+      <td>Worried</td>
+    </tr>
+    <tr>
+      <td>110</td>
+      <td>Okay</td>
+    </tr>
+    <tr>
+      <td>111</td>
+      <td>Bored</td>
+    </tr>
+    <tr>
+      <td>112</td>
+      <td>Juggling</td>
+    </tr>
+    <tr>
+      <td>113</td>
+      <td>Going with the flow</td>
+    </tr>
+  </tbody>
+</table>
+<p>114 rows × 1 columns</p>
+</div>
+
+<pre><code class="python">for i in one_word.index:
+    #print(one_word.iloc[i][0])
+    #print(re.match(r'B.*', str(one_word.iloc[i][0])))    
+    if re.match( r'([aA]nx)(.*)', str(one_word.iloc[i][0])) != None:
+        #print(one_word.iloc[i][0])
+        one_word.iloc[i] = &quot;Anxious&quot;
+    elif re.match( r'(.*)([hH]ap)(.*)', str(one_word.iloc[i][0])) != None:
+        #print(one_word.iloc[i][0])
+        one_word.iloc[i] = &quot;Happy&quot;
+
+
+one_word
+</code></pre>
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ONE word that describes your mood right now.</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>Happy</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Irritated</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Bored</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Depression</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Aimless</td>
+    </tr>
+    <tr>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <td>109</td>
+      <td>Worried</td>
+    </tr>
+    <tr>
+      <td>110</td>
+      <td>Okay</td>
+    </tr>
+    <tr>
+      <td>111</td>
+      <td>Bored</td>
+    </tr>
+    <tr>
+      <td>112</td>
+      <td>Juggling</td>
+    </tr>
+    <tr>
+      <td>113</td>
+      <td>Going with the flow</td>
+    </tr>
+  </tbody>
+</table>
+<p>114 rows × 1 columns</p>
+</div>
+
+<pre><code class="python">for i in one_word.index:
+    if re.match(r'(.*\s.*\s.*\S)', str(one_word.iloc[i][0])) != None:
+        print([i],one_word.iloc[i][0])
+
+
+
+</code></pre>
+
+<pre><code>[10] Enjoying lockdown condition which never experienced in life
+[15] Learn something new 
+[27] Lazy and tired 
+[45] Feeling low due to current situation
+[47] Find a Cure for COVID-19
+[48] Optimistic that this phase will pass away one day. 
+[51] Faith in god
+[66] I am optimistic
+[69] Just want the country to do well
+[80] 80% Relaxed 20% anxious
+[89] Need work from home
+[101] Normal, as I am used to work from home 
+[105] Self descipline, face situation be prepaired
+[113] Going with the flow
+</code></pre>
+<pre><code class="python">one_word.iloc[10] = &quot;Enjoying&quot;
+one_word.iloc[15] = &quot;Good&quot;
+one_word.iloc[27] = &quot;Lazy&quot;
+one_word.iloc[45] = &quot;Low&quot;
+one_word.iloc[47] = &quot;Worried&quot;
+one_word.iloc[51] = &quot;Hopeful&quot;
+one_word.iloc[66] = &quot;Optimistic&quot;
+one_word.iloc[69] = &quot;Hopeful&quot;
+one_word.iloc[80] = &quot;Relaxed&quot;
+one_word.iloc[89] = &quot;Stressed&quot;
+one_word.iloc[101] = &quot;Normal&quot;
+one_word.iloc[105] = &quot;Prepared&quot;
+one_word.iloc[113] = &quot;Normal&quot;
+
+</code></pre>
+
+<pre><code class="python">for i in one_word.index:
+    if re.match(r'(.*\s.*\S)', str(one_word.iloc[i][0])) != None:
+        print([i],one_word.iloc[i][0])
+        #one_word.iloc[i] = &quot;Bored&quot;
+        #r'(.*\s.*\s.*\S)'
+</code></pre>
+
+<pre><code>[22] Aai Baba
+[32] Active mood
+[48] Optimistic that this phase will pass away one day. 
+[61] optimistic, peaceful
+</code></pre>
+<pre><code class="python">for i in one_word.index:
+    #print(one_word.iloc[i][0])
+    #print(re.match(r'B.*', str(one_word.iloc[i][0])))    
+    if re.match( r'([oO]pt)(.*)', str(one_word.iloc[i][0])) != None:
+        #print(one_word.iloc[i][0])
+        one_word.iloc[i] = &quot;Optimistic&quot;
+</code></pre>
+
+<pre><code class="python">one_word.iloc[22] = &quot;Worried&quot;
+one_word.iloc[32] = &quot;Active&quot;
+
+</code></pre>
+
+<pre><code class="python">one_word['ONE word that describes your mood right now.'].value_counts()
+</code></pre>
+
+<pre><code>Bored             20
+Worried            7
+Good               5
+Anxious            5
+Happy              5
+Optimistic         4
+Normal             4
+Chill              4
+Scared             3
+Relaxed            3
+Sad                2
+Hopeful            2
+Lazy               2
+Calm               2
+Tired              2
+Stressed           2
+Concerned          2
+bewildered         1
+Confused           1
+Pessimistic        1
+Depression         1
+Content            1
+Frustated          1
+claustrophobic     1
+Low                1
+Frustrated         1
+Tensed             1
+Aimless            1
+Exhausted          1
+Praying            1
+Imprisoned         1
+Prayerful.         1
+Okay               1
+Juggling           1
+Lazy               1
+Contented          1
+Annoyed            1
+Hungry             1
+Terrible           1
+Enjoing            1
+Aimless            1
+Lethargic          1
+Irritating         1
+Tension            1
+Angry              1
+Enjoying           1
+Irritated          1
+Calm               1
+Prepared           1
+Depleted           1
+Active             1
+HAPPY              1
+Busy               1
+Energetic          1
+Stressed           1
+Distancing         1
+Discouraged        1
+Name: ONE word that describes your mood right now., dtype: int64
+</code></pre>
+<pre><code class="python">#covidDF = covidDF.append(one_word)
+#DF = [covidDF, one_word]
+#covidnewDF = pd.concat([covidDF, one_word], ignore_index=True)
+#one_word.columns = 'Mood in ONE word'
+
+covidDF['Mood in One Word'] = one_word['ONE word that describes your mood right now.']
+</code></pre>
+
+<pre><code class="python">covidDF.head()
+</code></pre>
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Timestamp</th>
+      <th>What is your occupation?</th>
+      <th>Where do you spend most of your free time?</th>
+      <th>How much time do you spend on streaming services?</th>
+      <th>How much time do you spend on gaming?</th>
+      <th>How much time do you spend on social media?</th>
+      <th>What are you most worried about during this time?</th>
+      <th>ONE word that describes your mood right now.</th>
+      <th>Where are you located ?</th>
+      <th>Mood in One Word</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>29/03/2020 00:22:00</td>
+      <td>Professional</td>
+      <td>Other (Gardening, Cooking, Sleeping)</td>
+      <td>&gt; 3 hours</td>
+      <td>1 - 3 hours</td>
+      <td>&lt; 1 hour</td>
+      <td>Family, Economy, Being stuck at home</td>
+      <td>Happy</td>
+      <td>NaN</td>
+      <td>Happy</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>29/03/2020 00:26:52</td>
+      <td>Student</td>
+      <td>Online Courses (Coursera, LinkedIn Learning, U...</td>
+      <td>&lt; 1 hour</td>
+      <td>&lt; 1 hour</td>
+      <td>1 - 3 hours</td>
+      <td>Job, Family, Being stuck at home</td>
+      <td>Irritated</td>
+      <td>NaN</td>
+      <td>Irritated</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>29/03/2020 00:37:44</td>
+      <td>Professional</td>
+      <td>Online Courses (Coursera, LinkedIn Learning, U...</td>
+      <td>&gt; 3 hours</td>
+      <td>&lt; 1 hour</td>
+      <td>1 - 3 hours</td>
+      <td>Job</td>
+      <td>Bored</td>
+      <td>NaN</td>
+      <td>Bored</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>29/03/2020 00:38:23</td>
+      <td>Home-maker</td>
+      <td>Social Media (Twitter, Instagram, Facebook)</td>
+      <td>&lt; 1 hour</td>
+      <td>&lt; 1 hour</td>
+      <td>1 - 3 hours</td>
+      <td>Family</td>
+      <td>Depression</td>
+      <td>NaN</td>
+      <td>Depression</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>29/03/2020 00:38:35</td>
+      <td>Professional</td>
+      <td>Streaming services (Netflix, Amazon Prime, You...</td>
+      <td>&gt; 3 hours</td>
+      <td>&lt; 1 hour</td>
+      <td>&gt; 3 hours</td>
+      <td>Job, Family</td>
+      <td>Aimless</td>
+      <td>NaN</td>
+      <td>Aimless</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<pre><code class="python">profession = ['Professional','Student','Home-maker','Retired']
+
+for i in covidDF['What is your occupation?'].index:
+    if covidDF.iloc[i][1] not in profession:
+        #print(i,covidDF['What is your occupation?'].columns)
+        print(i, covidDF.loc[i][1])
+
+</code></pre>
+
+<pre><code>13 Retired Mathematics Professor
+47 Business 
+57 Nurse practitioner
+</code></pre>
+<pre><code class="python">occ = pd.DataFrame(covidDF['What is your occupation?']).astype(str)
+
+
+covidDF['What is your occupation?'].value_counts()
+</code></pre>
+
+<pre><code>Professional                     64
+Student                          35
+Home-maker                        7
+Retired                           5
+Retired Mathematics Professor     1
+Nurse practitioner                1
+Business                          1
+Name: What is your occupation?, dtype: int64
+</code></pre>
+<pre><code class="python">occ.iloc[13]['What is your occupation?'] = &quot;Retired&quot;
+occ.iloc[47]['What is your occupation?'] = &quot;Professional&quot;
+occ.iloc[57]['What is your occupation?'] = &quot;Professional&quot;
+
+occ
+
+covidDF['Occupation'] = occ['What is your occupation?']
+
+covidDF['Occupation'].value_counts()
+</code></pre>
+
+<pre><code>Professional    66
+Student         35
+Home-maker       7
+Retired          6
+Name: Occupation, dtype: int64
+</code></pre>
+<pre><code class="python">covidDF.isnull().sum()
+</code></pre>
+
+<pre><code>Timestamp                                             0
+What is your occupation?                              0
+Where do you spend most of your free time?            0
+How much time do you spend on streaming services?     4
+How much time do you spend on gaming?                 9
+How much time do you spend on social media?           3
+What are you most worried about during this time?     0
+ONE word that describes your mood right now.          0
+Where are you located ?                              65
+Mood in One Word                                      0
+Occupation                                            0
+dtype: int64
+</code></pre>
+<pre><code class="python">
+#covidDF['How much time do you spend on streaming services?'==].fillna(0)
+
+#covid = covidDF[covidDF['How much time do you spend on streaming services?'].isnull().sum()
+
+#covidDF['How much time do you spend on streaming services?'].isnull().value_counts()
+
+#covidDF['How much time do you spend on streaming services?']== '1 - 3 hours'
+
+#covidDF = covidDF['How much time do you spend on streaming services?'].fillna('&lt; 1 hour')
+
+
+covidDF.loc[covidDF['How much time do you spend on gaming?'] == '&lt; 1 hour',('Where do you spend most of your free time?')]
+
+#covidDF.loc[covidDF['How much time do you spend on gaming?'] == '&lt; 1 hour','How much time do you spend on streaming services?'].value_counts()
+
+
+
+#covidDF.loc[covidDF['How much time do you spend on gaming?'] == '&lt; 1 hour','How much time do you spend on gaming?'].value_counts()
+</code></pre>
+
+<pre><code>1      Online Courses (Coursera, LinkedIn Learning, U...
+2      Online Courses (Coursera, LinkedIn Learning, U...
+3            Social Media (Twitter, Instagram, Facebook)
+4      Streaming services (Netflix, Amazon Prime, You...
+5                   Other (Gardening, Cooking, Sleeping)
+                             ...                        
+108    Streaming services (Netflix, Amazon Prime, You...
+109                 Other (Gardening, Cooking, Sleeping)
+110                 Other (Gardening, Cooking, Sleeping)
+111    Streaming services (Netflix, Amazon Prime, You...
+112    Streaming services (Netflix, Amazon Prime, You...
+Name: Where do you spend most of your free time?, Length: 88, dtype: object
+</code></pre>
+<pre><code class="python">covidDF['How much time do you spend on streaming services?'] = covidDF['How much time do you spend on streaming services?'].fillna('&lt; 1 hour')
+#covidDF.isnull().sum()
+covidDF['How much time do you spend on streaming services?'].isnull().sum()
+
+#covidDF
+</code></pre>
+
+<pre><code>0
+</code></pre>
+<pre><code class="python">covidDF.isnull().sum()
+</code></pre>
+
+<pre><code>Timestamp                                             0
+What is your occupation?                              0
+Where do you spend most of your free time?            0
+How much time do you spend on streaming services?     0
+How much time do you spend on gaming?                 9
+How much time do you spend on social media?           3
+What are you most worried about during this time?     0
+ONE word that describes your mood right now.          0
+Where are you located ?                              65
+Mood in One Word                                      0
+Occupation                                            0
+dtype: int64
+</code></pre>
+<pre><code class="python">covidDF['How much time do you spend on gaming?'] = covidDF['How much time do you spend on gaming?'].fillna('&lt; 1 hour')
+#covidDF.isnull().sum()
+covidDF['How much time do you spend on gaming?'].isnull().sum()
+
+#covidDF
+</code></pre>
+
+<pre><code>0
+</code></pre>
+<pre><code class="python">covidDF['How much time do you spend on social media?'] = covidDF['How much time do you spend on social media?'].fillna('&lt; 1 hour')
+#covidDF.isnull().sum()
+covidDF['How much time do you spend on social media?'].isnull().sum()
+
+#covidDF
+</code></pre>
+
+<pre><code>0
+</code></pre>
+<pre><code class="python">covidDF['What are you most worried about during this time?']
+</code></pre>
+
+<pre><code>0      Family, Economy, Being stuck at home
+1          Job, Family, Being stuck at home
+2                                       Job
+3                                    Family
+4                               Job, Family
+                       ...                 
+109                                  Family
+110                                  Family
+111           Not necessary for you to know
+112              Unknown Consequences later
+113                    Job, Family, Economy
+Name: What are you most worried about during this time?, Length: 114, dtype: object
+</code></pre>
+<pre><code class="python">c = covidDF['What are you most worried about during this time?'].value_counts()
+
+c['Family'].sum()
+c
+</code></pre>
+
+<pre><code>Family                                          31
+Economy                                         12
+Being stuck at home                             11
+Job, Family, Economy                             7
+Job                                              7
+Job, Family, Economy, Being stuck at home        7
+Family, Economy, Being stuck at home             5
+Job, Family                                      5
+Job, Family, Being stuck at home                 3
+Family, Economy                                  3
+Family, Being stuck at home                      2
+Job, Economy                                     2
+Health                                           1
+Overcoming the present situation                 1
+Lokha Sanastha dukkho Bhavantu                   1
+not worried as things will improve               1
+Uni                                              1
+Can’t travel                                     1
+How to keep healthy                              1
+Travel plans                                     1
+Job, Economy, Being stuck at home                1
+Job, Economy, Being stuck at home, My future     1
+When will the situation be under control         1
+Unknown Consequences later                       1
+To get more knowledge                            1
+Family, Education                                1
+Economy, Being stuck at home                     1
+Exams                                            1
+Study.                                           1
+Not necessary for you to know                    1
+Academic session and exams                       1
+Name: What are you most worried about during this time?, dtype: int64
+</code></pre>
+<pre><code class="python">looper = covidDF['What are you most worried about during this time?']
+
+Family = []
+
+for i in looper.index: 
+    #print(looper.iloc[i])
+    if re.match( r'(.*)[fF]am(.*)', str(looper.iloc[i])) != None:
+        #print(looper.iloc[i])
+        Family.append(1)
+    else:
+        Family.append(0)
+
+print(Family)
+
+</code></pre>
+
+<pre><code>[1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1]
+</code></pre>
+<pre><code class="python">Economy = []
+
+for i in looper.index: 
+    #print(looper.iloc[i])
+    if re.match( r'(.*)Econo(.*)', str(looper.iloc[i])) != None:
+        #print(looper.iloc[i])
+        Economy.append(1)
+    else:
+        Economy.append(0)
+
+print(Economy)
+
+
+</code></pre>
+
+<pre><code>[1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1]
+</code></pre>
+<pre><code class="python">Job = []
+
+for i in looper.index: 
+    #print(looper.iloc[i])
+    if re.match( r'(.*)Job(.*)', str(looper.iloc[i])) != None:
+        #print(looper.iloc[i])
+        Job.append(1)
+    else:
+        Job.append(0)
+
+print(Job)
+
+
+</code></pre>
+
+<pre><code>[0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1]
+</code></pre>
+<pre><code class="python">Stuck = []
+
+for i in looper.index: 
+    #print(looper.iloc[i])
+    if re.match( r'(.*)Being\s[sS](.*)\s(.*)', str(looper.iloc[i])) != None:
+        #print(looper.iloc[i])
+        Stuck.append(1)
+    else:
+        Stuck.append(0)
+
+print(Stuck)
+
+
+</code></pre>
+
+<pre><code>[1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+</code></pre>
+<pre><code class="python">other = []
+
+
+for i in looper.index: 
+    #print(looper.iloc[i])
+    if re.match( r'(.*)Being\s[sS](.*)\s(.*)', str(looper.iloc[i])) != None or re.match(r'(.*)Job(.*)', str(looper.iloc[i])) != None or re.match(r'Fam(.*)', str(looper.iloc[i])) != None or re.match(r'(.*)Econo(.*)', str(looper.iloc[i])) != None:
+        #print(looper.iloc[i])
+        other.append(0)
+    else:
+        other.append(1)
+print(other)
+
+
+</code></pre>
+
+<pre><code>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+</code></pre>
+<pre><code class="python">occupation_df = pd.DataFrame(list(zip(Stuck, Job, Economy, Family, other)), columns = ['Stuck','Job','Economy','Family','other'])
+
+cat = occupation_df.sum()
+
+cat.sum()
+
+occupation_df
+
+</code></pre>
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Stuck</th>
+      <th>Job</th>
+      <th>Economy</th>
+      <th>Family</th>
+      <th>other</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <td>109</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>110</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>111</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>112</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>113</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>114 rows × 5 columns</p>
+</div>
+
+<pre><code class="python"># covidDF['Mood in One Word'] = one_word['ONE word that describes your mood right now.']
+covidDF[['Stuck','Job','Economy','Family','other']] = occupation_df[['Stuck','Job','Economy','Family','other']]
+</code></pre>
+
+<pre><code class="python">covidDF
+
+covidDF.to_csv('COVID19_SurveyResponses.csv')
+</code></pre>
+
+<pre><code class="python">covidDF['Occupation'].value_counts()
+</code></pre>
+
+<pre><code>Professional    66
+Student         35
+Home-maker       7
+Retired          6
+Name: Occupation, dtype: int64
+</code></pre>
+<pre><code class="python">#a=covidDF.copy()
+</code></pre>
+
+<pre><code class="python">
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+        <script src="../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
