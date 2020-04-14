@@ -16,9 +16,14 @@
 
 ## <b><span style="font-family: Book Antiqua; font-size: 1em;">Survey</b>
 
- <span style="font-family: Times New Roman; font-size: 1.2em;">The survey was sent to people, mostly friends and family in the US, India & Canada, stuck at home during the pandemic. The survey had 8 questions:
+ <span style="font-family: Times New Roman; font-size: 1.2em;">The survey was sent to people, mostly friends and family in the US, India & Canada, stuck at home during the pandemic. A total of 114 people responded. The survey had 8 questions:
  
- </b><span style="font-family: Book Antiqua; font-size: 1em;">Q1. What is your occupation?
+ </b><span style="font-family: Book Antiqua; font-size: 1em;">Q1. What is your occupation? 
+ * Student
+ * Professional
+ * Home-maker
+ * Retired
+ * Other (free text field)
  
  </b><span style="font-family: Book Antiqua; font-size: 1em;">Q2. Where do you spend most of your free time?
  
