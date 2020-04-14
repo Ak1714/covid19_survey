@@ -1,8 +1,7 @@
-site_name: Analysis of Covid19 survey data
+site_name: ANALYSIS OF COVID19 SURVEY DATA
 nav:
     - Home: 'index.md'
- 
-    - Preprocessing: 'COVID.md'
+    - Analysis: 'COVID.md'
     
 theme:
     name: mkdocs

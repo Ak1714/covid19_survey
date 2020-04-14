@@ -1,5 +1,5 @@
 
-## <span style="font-family: Book Antiqua; font-size: 1em;">Survey Analysis</span>
+## <span style="font-family: Book Antiqua; font-size: 0.9em;">Importing libraries</span>
 
 <span style="font-family: Times New Roman; font-size: 1.2em;">Importing pandas and numpy libraries and reading the survey data into the dataframe - 'covidDF'</span>
 
@@ -29,7 +29,7 @@ covidDF.head()
         text-align: right;
     }
 </style>
-<table border="2" class="dataframe">
+<table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right; font-size: 12px">
       <th></th>
@@ -108,8 +108,10 @@ covidDF.head()
   </tbody>
 </table>
 </div>
-
 <br />
+
+## <span style="font-family: Book Antiqua; font-size: 0.9em;">Checking for NULLs</span>
+
 <span style="font-family: Times New Roman; font-size: 1.2em;">Checking if the dataframe has null values</span>
 
 ```python
@@ -222,10 +224,10 @@ covidDF.describe()
   </tbody>
 </table>
 </div>
-
-
-
 <br />
+## <span style="font-family: Book Antiqua; font-size: 0.9em;">Mood in ONE word
+
+
 <span style="font-family: Times New Roman; font-size: 1.2em;">The last column 'ONE word that describes your mood right now.' is a free text field. However some respondents have replied in more than one word. 
 We can edit this field by grouping similar words or feelings into a single word
 
@@ -846,13 +848,13 @@ covidDF.head()
   </tbody>
 </table>
 </div>
-
-
-
-```python
-        
+```python       
 ```
 </br>
+
+## <span style="font-family: Book Antiqua; font-size: 0.9em;">Profession
+
+
 ```python
 profession = ['Professional','Student','Home-maker','Retired']
 
@@ -911,7 +913,7 @@ covidDF['Occupation'].value_counts()
     Name: Occupation, dtype: int64
 
 
-
+## <span style="font-family: Book Antiqua; font-size: 0.9em;">NULL imputation
 
 ```python
 covidDF.isnull().sum()
@@ -1025,7 +1027,7 @@ covidDF['How much time do you spend on social media?'].isnull().sum()
 
     0
 
-
+## <span style="font-family: Book Antiqua; font-size: 0.9em;">Worried about?
 
 
 ```python
@@ -1325,22 +1327,17 @@ occupation_df
 </div>
 
 
-
+```python
+```
+</br>
 
 ```python
 covidDF[['Stuck','Job','Economy','Family','other']] = occupation_df[['Stuck','Job','Economy','Family','other']]
 
-```
-
-
-```python
 covidDF
 
 covidDF.to_csv('COVID19_SurveyResponses.csv')
-```
 
-
-```python
 covidDF['Occupation'].value_counts()
 ```
 
@@ -1354,8 +1351,3 @@ covidDF['Occupation'].value_counts()
     Name: Occupation, dtype: int64
 
 
-
-
-```python
-
-```
