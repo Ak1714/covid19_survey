@@ -7,7 +7,7 @@
 		
 ## <b><span style="font-family: Book Antiqua; font-size: 1em;">Data source</b>
 
-    https://github.com/Ak1714/covid19_survey/tree/master/data
+ <a href="https://github.com/Ak1714/covid19_survey/tree/master/data">https://github.com/Ak1714/covid19_survey/tree/master/data<a>
 
 ## <b><span style="font-family: Book Antiqua; font-size: 1em;">Summary</b>
 
