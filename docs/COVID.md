@@ -1,15 +1,15 @@
 
-## Covid19 Survey Analysis
+## <span style="font-family: Book Antiqua; font-size: 1em;">Survey Analysis</span>
 
+<span style="font-family: Times New Roman; font-size: 1.2em;">Importing pandas and numpy libraries and reading the survey data into the dataframe - 'covidDF'</span>
 
 ```python
-# Importing pandas + numpy and reading the survey data into the dataframe - covidDF
 
 import pandas as pd
-import numpy as np
 
 covidDF = pd.read_csv("COVID-19 Survey (Responses) - Form responses 1.csv")
 covidDF.head()
+
 ```
 
 
@@ -29,9 +29,9 @@ covidDF.head()
         text-align: right;
     }
 </style>
-<table border="1" class="dataframe">
+<table border="2" class="dataframe">
   <thead>
-    <tr style="text-align: right;">
+    <tr style="text-align: right; font-size: 12px">
       <th></th>
       <th>Timestamp</th>
       <th>What is your occupation?</th>
@@ -45,7 +45,7 @@ covidDF.head()
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr style = "font-size: 12px;">
       <td>0</td>
       <td>29/03/2020 00:22:00</td>
       <td>Professional</td>
@@ -57,7 +57,7 @@ covidDF.head()
       <td>Happy</td>
       <td>NaN</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;">
       <td>1</td>
       <td>29/03/2020 00:26:52</td>
       <td>Student</td>
@@ -69,7 +69,7 @@ covidDF.head()
       <td>Irritated</td>
       <td>NaN</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;">
       <td>2</td>
       <td>29/03/2020 00:37:44</td>
       <td>Professional</td>
@@ -81,7 +81,7 @@ covidDF.head()
       <td>Bored</td>
       <td>NaN</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;">
       <td>3</td>
       <td>29/03/2020 00:38:23</td>
       <td>Home-maker</td>
@@ -93,7 +93,7 @@ covidDF.head()
       <td>Depression</td>
       <td>NaN</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;">
       <td>4</td>
       <td>29/03/2020 00:38:35</td>
       <td>Professional</td>
@@ -109,13 +109,12 @@ covidDF.head()
 </table>
 </div>
 
-
-
+<br />
+<span style="font-family: Times New Roman; font-size: 1.2em;">Checking if the dataframe has null values</span>
 
 ```python
-# Checking if the dataframe has null values
+covidDF.isnull().sum() 
 
-covidDF.isnull().sum() #displays entire dataframe with null and non-null values
 ```
 
 
@@ -136,7 +135,7 @@ covidDF.isnull().sum() #displays entire dataframe with null and non-null values
 
 
 ```python
-covidDF.describe() # an overview
+covidDF.describe()
 ```
 
 
@@ -156,9 +155,9 @@ covidDF.describe() # an overview
         text-align: right;
     }
 </style>
-<table border="1" class="dataframe">
+<table border="2" class="dataframe">
   <thead>
-    <tr style="text-align: right;">
+    <tr style="text-align: right;font-size: 12px;">
       <th></th>
       <th>Timestamp</th>
       <th>What is your occupation?</th>
@@ -172,7 +171,7 @@ covidDF.describe() # an overview
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>count</td>
       <td>114</td>
       <td>114</td>
@@ -184,7 +183,7 @@ covidDF.describe() # an overview
       <td>114</td>
       <td>49</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>unique</td>
       <td>114</td>
       <td>7</td>
@@ -196,7 +195,7 @@ covidDF.describe() # an overview
       <td>87</td>
       <td>4</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>top</td>
       <td>29/03/2020 11:26:31</td>
       <td>Professional</td>
@@ -208,7 +207,7 @@ covidDF.describe() # an overview
       <td>Bored</td>
       <td>USA</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>freq</td>
       <td>1</td>
       <td>64</td>
@@ -226,14 +225,14 @@ covidDF.describe() # an overview
 
 
 
+<br />
+<span style="font-family: Times New Roman; font-size: 1.2em;">The last column 'ONE word that describes your mood right now.' is a free text field. However some respondents have replied in more than one word. 
+We can edit this field by grouping similar words or feelings into a single word
 
 ```python
-# The last column 'ONE word that describes your mood right now.' is a free text field
-# However some respondents have replied in more than one word. We can edit this field by grouping similar words or feelings into a single word
-
 import re # RegEx
 
-# creating a dataframe with only the required column which can be later merger with the original dataframe CovidDF
+# creating a dataframe with only the required column which can be later merged with the original dataframe 'CovidDF'
 one_word = pd.DataFrame(covidDF["ONE word that describes your mood right now."]).astype(str)
 
 # The re.match function returns a 'None' if there is no match
@@ -250,7 +249,6 @@ one_word # Let's have a look at the new dataframe
 
 
 
-
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -267,53 +265,53 @@ one_word # Let's have a look at the new dataframe
 </style>
 <table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: right;">
+    <tr style="text-align: right;font-size: 12px;">
       <th></th>
       <th>ONE word that describes your mood right now.</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>0</td>
       <td>Happy</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>1</td>
       <td>Irritated</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>2</td>
       <td>Bored</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>3</td>
       <td>Depression</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>4</td>
       <td>Aimless</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>...</td>
       <td>...</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>109</td>
       <td>Worried</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>110</td>
       <td>Okay</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>111</td>
       <td>Bored</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>112</td>
       <td>Juggling</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>113</td>
       <td>Going with the flow</td>
     </tr>
@@ -322,26 +320,26 @@ one_word # Let's have a look at the new dataframe
 <p>114 rows × 1 columns</p>
 </div>
 
+```python
+```
+<span style="font-family: Times New Roman; font-size: 1.2em;">Repeating the same steps to look for words that might have the similar meaning </span>
+
 
 
 
 ```python
-# Repeating the same steps to look for words that might have the same  other words that might 
+	for i in one_word.index: 
+		if re.match( r'(.*)([cC]onc)(.*)', str(one_word.iloc[i][0])) != None:
+			one_word.iloc[i] = "Concerned"
+		elif re.match( r'(.*)([wW]orr)(.*)', str(one_word.iloc[i][0])) != None:
+			one_word.iloc[i] = "Worried"
+		elif re.match( r'(.*)([sS]car)(.*)', str(one_word.iloc[i][0])) != None:
+			one_word.iloc[i] = "Scared"
 
-for i in one_word.index: 
-    if re.match( r'(.*)([cC]onc)(.*)', str(one_word.iloc[i][0])) != None:
-        one_word.iloc[i] = "Concerned"
-    elif re.match( r'(.*)([wW]orr)(.*)', str(one_word.iloc[i][0])) != None:
-        one_word.iloc[i] = "Worried"
-    elif re.match( r'(.*)([sS]car)(.*)', str(one_word.iloc[i][0])) != None:
-        one_word.iloc[i] = "Scared"
-
-one_word
+	one_word
 ```
 
 
-
-
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -358,53 +356,53 @@ one_word
 </style>
 <table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: right;">
+    <tr style="text-align: right;font-size: 12px;">
       <th></th>
       <th>ONE word that describes your mood right now.</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>0</td>
       <td>Happy</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>1</td>
       <td>Irritated</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>2</td>
       <td>Bored</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>3</td>
       <td>Depression</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>4</td>
       <td>Aimless</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>...</td>
       <td>...</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>109</td>
       <td>Worried</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>110</td>
       <td>Okay</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>111</td>
       <td>Bored</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>112</td>
       <td>Juggling</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>113</td>
       <td>Going with the flow</td>
     </tr>
@@ -413,20 +411,15 @@ one_word
 <p>114 rows × 1 columns</p>
 </div>
 
-
-
-
 ```python
-for i in one_word.index:
-    #print(one_word.iloc[i][0])
-    #print(re.match(r'B.*', str(one_word.iloc[i][0])))    
+```
+</br>
+```python
+for i in one_word.index:  
     if re.match( r'(.*)([gG]oo)(.*)', str(one_word.iloc[i][0])) != None:
-        #print(one_word.iloc[i][0])
         one_word.iloc[i] = "Good"
     elif re.match( r'(.*)([sS]ad)(.*)', str(one_word.iloc[i][0])) != None:
-        #print(one_word.iloc[i][0])
         one_word.iloc[i] = "Sad"
-
 
 one_word
 ```
@@ -450,53 +443,53 @@ one_word
 </style>
 <table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: right;">
+    <tr style="text-align: right;font-size: 12px;">
       <th></th>
       <th>ONE word that describes your mood right now.</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>0</td>
       <td>Happy</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>1</td>
       <td>Irritated</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>2</td>
       <td>Bored</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>3</td>
       <td>Depression</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>4</td>
       <td>Aimless</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>...</td>
       <td>...</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>109</td>
       <td>Worried</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>110</td>
       <td>Okay</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>111</td>
       <td>Bored</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>112</td>
       <td>Juggling</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>113</td>
       <td>Going with the flow</td>
     </tr>
@@ -504,21 +497,18 @@ one_word
 </table>
 <p>114 rows × 1 columns</p>
 </div>
-
-
 
 
 ```python
-for i in one_word.index:
-    #print(one_word.iloc[i][0])
-    #print(re.match(r'B.*', str(one_word.iloc[i][0])))    
+```
+</br>
+
+```python
+for i in one_word.index:   
     if re.match( r'([aA]nx)(.*)', str(one_word.iloc[i][0])) != None:
-        #print(one_word.iloc[i][0])
         one_word.iloc[i] = "Anxious"
     elif re.match( r'(.*)([hH]ap)(.*)', str(one_word.iloc[i][0])) != None:
-        #print(one_word.iloc[i][0])
         one_word.iloc[i] = "Happy"
-
 
 one_word
 ```
@@ -542,53 +532,53 @@ one_word
 </style>
 <table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: right;">
+    <tr style="text-align: right;font-size: 12px;">
       <th></th>
       <th>ONE word that describes your mood right now.</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>0</td>
       <td>Happy</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>1</td>
       <td>Irritated</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>2</td>
       <td>Bored</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>3</td>
       <td>Depression</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>4</td>
       <td>Aimless</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>...</td>
       <td>...</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>109</td>
       <td>Worried</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>110</td>
       <td>Okay</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>111</td>
       <td>Bored</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>112</td>
       <td>Juggling</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>113</td>
       <td>Going with the flow</td>
     </tr>
@@ -597,7 +587,9 @@ one_word
 <p>114 rows × 1 columns</p>
 </div>
 
-
+```python
+```
+</br>
 
 
 ```python
@@ -648,8 +640,7 @@ one_word.iloc[113] = "Normal"
 for i in one_word.index:
     if re.match(r'(.*\s.*\S)', str(one_word.iloc[i][0])) != None:
         print([i],one_word.iloc[i][0])
-        #one_word.iloc[i] = "Bored"
-        #r'(.*\s.*\s.*\S)'
+
 ```
 
     [22] Aai Baba
@@ -660,11 +651,8 @@ for i in one_word.index:
 
 
 ```python
-for i in one_word.index:
-    #print(one_word.iloc[i][0])
-    #print(re.match(r'B.*', str(one_word.iloc[i][0])))    
+for i in one_word.index:   
     if re.match( r'([oO]pt)(.*)', str(one_word.iloc[i][0])) != None:
-        #print(one_word.iloc[i][0])
         one_word.iloc[i] = "Optimistic"
 ```
 
@@ -746,17 +734,14 @@ one_word['ONE word that describes your mood right now.'].value_counts()
 
 
 ```python
-#covidDF = covidDF.append(one_word)
-#DF = [covidDF, one_word]
-#covidnewDF = pd.concat([covidDF, one_word], ignore_index=True)
-#one_word.columns = 'Mood in ONE word'
-
 covidDF['Mood in One Word'] = one_word['ONE word that describes your mood right now.']
+
 ```
 
 
 ```python
 covidDF.head()
+
 ```
 
 
@@ -778,7 +763,7 @@ covidDF.head()
 </style>
 <table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: right;">
+    <tr style="text-align: right;font-size: 12px;">
       <th></th>
       <th>Timestamp</th>
       <th>What is your occupation?</th>
@@ -793,7 +778,7 @@ covidDF.head()
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>0</td>
       <td>29/03/2020 00:22:00</td>
       <td>Professional</td>
@@ -806,7 +791,7 @@ covidDF.head()
       <td>NaN</td>
       <td>Happy</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>1</td>
       <td>29/03/2020 00:26:52</td>
       <td>Student</td>
@@ -819,7 +804,7 @@ covidDF.head()
       <td>NaN</td>
       <td>Irritated</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>2</td>
       <td>29/03/2020 00:37:44</td>
       <td>Professional</td>
@@ -832,7 +817,7 @@ covidDF.head()
       <td>NaN</td>
       <td>Bored</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>3</td>
       <td>29/03/2020 00:38:23</td>
       <td>Home-maker</td>
@@ -845,7 +830,7 @@ covidDF.head()
       <td>NaN</td>
       <td>Depression</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>4</td>
       <td>29/03/2020 00:38:35</td>
       <td>Professional</td>
@@ -864,13 +849,15 @@ covidDF.head()
 
 
 
-
+```python
+        
+```
+</br>
 ```python
 profession = ['Professional','Student','Home-maker','Retired']
 
 for i in covidDF['What is your occupation?'].index:
     if covidDF.iloc[i][1] not in profession:
-        #print(i,covidDF['What is your occupation?'].columns)
         print(i, covidDF.loc[i][1])
         
 ```
@@ -884,8 +871,8 @@ for i in covidDF['What is your occupation?'].index:
 ```python
 occ = pd.DataFrame(covidDF['What is your occupation?']).astype(str)
 
-
 covidDF['What is your occupation?'].value_counts()
+
 ```
 
 
@@ -908,11 +895,10 @@ occ.iloc[13]['What is your occupation?'] = "Retired"
 occ.iloc[47]['What is your occupation?'] = "Professional"
 occ.iloc[57]['What is your occupation?'] = "Professional"
 
-occ
-
 covidDF['Occupation'] = occ['What is your occupation?']
 
 covidDF['Occupation'].value_counts()
+
 ```
 
 
@@ -951,25 +937,8 @@ covidDF.isnull().sum()
 
 
 ```python
-
-#covidDF['How much time do you spend on streaming services?'==].fillna(0)
-
-#covid = covidDF[covidDF['How much time do you spend on streaming services?'].isnull().sum()
-
-#covidDF['How much time do you spend on streaming services?'].isnull().value_counts()
-
-#covidDF['How much time do you spend on streaming services?']== '1 - 3 hours'
-
-#covidDF = covidDF['How much time do you spend on streaming services?'].fillna('< 1 hour')
-
-
 covidDF.loc[covidDF['How much time do you spend on gaming?'] == '< 1 hour',('Where do you spend most of your free time?')]
 
-#covidDF.loc[covidDF['How much time do you spend on gaming?'] == '< 1 hour','How much time do you spend on streaming services?'].value_counts()
-
-
-
-#covidDF.loc[covidDF['How much time do you spend on gaming?'] == '< 1 hour','How much time do you spend on gaming?'].value_counts()
 ```
 
 
@@ -993,10 +962,9 @@ covidDF.loc[covidDF['How much time do you spend on gaming?'] == '< 1 hour',('Whe
 
 ```python
 covidDF['How much time do you spend on streaming services?'] = covidDF['How much time do you spend on streaming services?'].fillna('< 1 hour')
-#covidDF.isnull().sum()
+
 covidDF['How much time do you spend on streaming services?'].isnull().sum()
 
-#covidDF
 ```
 
 
@@ -1032,10 +1000,9 @@ covidDF.isnull().sum()
 
 ```python
 covidDF['How much time do you spend on gaming?'] = covidDF['How much time do you spend on gaming?'].fillna('< 1 hour')
-#covidDF.isnull().sum()
+
 covidDF['How much time do you spend on gaming?'].isnull().sum()
 
-#covidDF
 ```
 
 
@@ -1048,10 +1015,9 @@ covidDF['How much time do you spend on gaming?'].isnull().sum()
 
 ```python
 covidDF['How much time do you spend on social media?'] = covidDF['How much time do you spend on social media?'].fillna('< 1 hour')
-#covidDF.isnull().sum()
+
 covidDF['How much time do you spend on social media?'].isnull().sum()
 
-#covidDF
 ```
 
 
@@ -1064,6 +1030,7 @@ covidDF['How much time do you spend on social media?'].isnull().sum()
 
 ```python
 covidDF['What are you most worried about during this time?']
+
 ```
 
 
@@ -1136,8 +1103,7 @@ looper = covidDF['What are you most worried about during this time?']
 
 Family = []
 
-for i in looper.index: 
-    #print(looper.iloc[i])
+for i in looper.index:
     if re.match( r'(.*)[fF]am(.*)', str(looper.iloc[i])) != None:
         #print(looper.iloc[i])
         Family.append(1)
@@ -1175,10 +1141,8 @@ print(Economy)
 ```python
 Job = []
 
-for i in looper.index: 
-    #print(looper.iloc[i])
+for i in looper.index:
     if re.match( r'(.*)Job(.*)', str(looper.iloc[i])) != None:
-        #print(looper.iloc[i])
         Job.append(1)
     else:
         Job.append(0)
@@ -1195,10 +1159,8 @@ print(Job)
 ```python
 Stuck = []
 
-for i in looper.index: 
-    #print(looper.iloc[i])
+for i in looper.index:
     if re.match( r'(.*)Being\s[sS](.*)\s(.*)', str(looper.iloc[i])) != None:
-        #print(looper.iloc[i])
         Stuck.append(1)
     else:
         Stuck.append(0)
@@ -1214,12 +1176,9 @@ print(Stuck)
 
 ```python
 other = []
-
        
-for i in looper.index: 
-    #print(looper.iloc[i])
+for i in looper.index:
     if re.match( r'(.*)Being\s[sS](.*)\s(.*)', str(looper.iloc[i])) != None or re.match(r'(.*)Job(.*)', str(looper.iloc[i])) != None or re.match(r'Fam(.*)', str(looper.iloc[i])) != None or re.match(r'(.*)Econo(.*)', str(looper.iloc[i])) != None:
-        #print(looper.iloc[i])
         other.append(0)
     else:
         other.append(1)
@@ -1262,7 +1221,7 @@ occupation_df
 </style>
 <table border="1" class="dataframe">
   <thead>
-    <tr style="text-align: right;">
+    <tr style="text-align: right;font-size: 12px;">
       <th></th>
       <th>Stuck</th>
       <th>Job</th>
@@ -1272,7 +1231,7 @@ occupation_df
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>0</td>
       <td>1</td>
       <td>0</td>
@@ -1280,7 +1239,7 @@ occupation_df
       <td>1</td>
       <td>0</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>1</td>
       <td>1</td>
       <td>1</td>
@@ -1288,7 +1247,7 @@ occupation_df
       <td>1</td>
       <td>0</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>2</td>
       <td>0</td>
       <td>1</td>
@@ -1296,7 +1255,7 @@ occupation_df
       <td>0</td>
       <td>0</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>3</td>
       <td>0</td>
       <td>0</td>
@@ -1304,7 +1263,7 @@ occupation_df
       <td>1</td>
       <td>0</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>4</td>
       <td>0</td>
       <td>1</td>
@@ -1312,7 +1271,7 @@ occupation_df
       <td>1</td>
       <td>0</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>...</td>
       <td>...</td>
       <td>...</td>
@@ -1320,7 +1279,7 @@ occupation_df
       <td>...</td>
       <td>...</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>109</td>
       <td>0</td>
       <td>0</td>
@@ -1328,7 +1287,7 @@ occupation_df
       <td>1</td>
       <td>0</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>110</td>
       <td>0</td>
       <td>0</td>
@@ -1336,7 +1295,7 @@ occupation_df
       <td>1</td>
       <td>0</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>111</td>
       <td>0</td>
       <td>0</td>
@@ -1344,7 +1303,7 @@ occupation_df
       <td>0</td>
       <td>1</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>112</td>
       <td>0</td>
       <td>0</td>
@@ -1352,7 +1311,7 @@ occupation_df
       <td>0</td>
       <td>1</td>
     </tr>
-    <tr>
+    <tr style = "font-size: 12px;>
       <td>113</td>
       <td>0</td>
       <td>1</td>
@@ -1369,8 +1328,8 @@ occupation_df
 
 
 ```python
-# covidDF['Mood in One Word'] = one_word['ONE word that describes your mood right now.']
 covidDF[['Stuck','Job','Economy','Family','other']] = occupation_df[['Stuck','Job','Economy','Family','other']]
+
 ```
 
 
@@ -1395,11 +1354,6 @@ covidDF['Occupation'].value_counts()
     Name: Occupation, dtype: int64
 
 
-
-
-```python
-#a=covidDF.copy()
-```
 
 
 ```python

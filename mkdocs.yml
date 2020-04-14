@@ -4,5 +4,9 @@ nav:
  
     - Preprocessing: 'COVID.md'
     
+theme:
+    name: mkdocs
+    nav_style: dark
+    
     
 
