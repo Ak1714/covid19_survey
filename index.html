@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="img/favicon.ico">
-        <title>Analysis of Covid19 survey data</title>
+        <title>ANALYSIS OF COVID19 SURVEY DATA</title>
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/font-awesome.min.css" rel="stylesheet">
         <link href="css/base.css" rel="stylesheet">
@@ -21,9 +21,9 @@
     </head>
 
     <body class="homepage">
-        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand" href=".">Analysis of Covid19 survey data</a>
+                <a class="navbar-brand" href=".">ANALYSIS OF COVID19 SURVEY DATA</a>
                 <!-- Expander button -->
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
@@ -37,7 +37,7 @@
                                 <a href="." class="nav-link">Home</a>
                             </li>
                             <li class="navitem">
-                                <a href="COVID/" class="nav-link">Preprocessing</a>
+                                <a href="COVID/" class="nav-link">Analysis</a>
                             </li>
                         </ul>
 
@@ -75,7 +75,7 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="2"><a href="#project-layout" class="nav-link">Project layout</a>
+            <li class="nav-item" data-level="2"><a href="#project" class="nav-link">Project</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -90,7 +90,7 @@
               </ul>
             </li>
             
-            <li class="nav-item" data-level="2"><a href="#vetting-data" class="nav-link">Vetting data</a>
+            <li class="nav-item" data-level="2"><a href="#survey" class="nav-link">Survey</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -99,76 +99,46 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h2 id="project-layout"><b>Project layout</b></h2>
-<pre><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage with project summary
-    LCDA_Part1.md # Analyzing and vizualizing the data
-    LCDA_Part2.md # Clustering &amp; PCA
-    LCDA_Part3.md # Building models
+<h2 id="project"><b><span style="font-family: Book Antiqua; font-size: 1em;">Project</b></h2>
+<p><span style="font-family: Times New Roman; font-size: 1.2em;">Analysis of COVID-19 survey</p>
+<h2 id="data-source"><b><span style="font-family: Book Antiqua; font-size: 1em;">Data source</b></h2>
+<pre><code>https://github.com/Ak1714/covid19_survey/tree/master/data
 </code></pre>
-<h2 id="data-source"><b>Data source</b></h2>
-<pre><code>https://www.kaggle.com/wordsforthewise/lending-club
-</code></pre>
-<h2 id="summary"><b>Summary</b></h2>
-<p><a href="https://www.lendingclub.com/">Lending Club</a> is the world’s leading online marketplace for connecting borrowers and investors. 
- In this project the goal is to build a robust model using logistic regression and classification tree for predicting the final status of a loan based on variables available at the time when the loan is granted.  </p>
-<h2 id="vetting-data"><b>Vetting data</b></h2>
-<p>Reading the lendingdataclub 2017 Q3 csv file and scanning the file for all columns by skipping the first line since it is not required.</p>
-<pre><code>colNames &lt;- scan("LoanStats2017Q3.csv", what="character", skip=1, nlines=1, sep=",")
-</code></pre>
-<p>Specifying the character and factor columns for categorical data, since rest of it is mostly numerical and date data.</p>
-<pre><code>characterColumns &lt;- c("id", "member_id", "emp_title", "issue_d", "url",
-                  "desc", "zip_code", "addr_state", "earliest_cr_line", "last_pymnt_d",
-                  "next_pymnt_d", "last_credit_pull_d", "sec_app_earliest_cr_line",
-                  "hardship_type", "hardship_reason", "hardship_start_date",
-                  "hardship_end_date", "payment_plan_start_date",
-                  "debt_settlement_flag_date", "settlement_date")
-factorColumns &lt;- c("term", "grade", "sub_grade", "emp_length",
-               "home_ownership", "verification_status", "loan_status",
-               "pymnt_plan", "purpose", "title", "initial_list_status",
-               "policy_code", "application_type", "verification_status_joint",
-               "hardship_flag", "hardship_status", "hardship_loan_status",
-               "disbursement_method", "debt_settlement_flag", "settlement_status")
-</code></pre>
-<p>Excluding the top two rows and any other row that is not part of the main data by specifying the exact number of rows (122701)</p>
-<pre><code>lendingRows &lt;- 122701
-lendingData &lt;- read.table("LoanStats2017Q3.csv", skip=1, sep=",", nrows=lendingRows,
-                      colClasses = myColClasses, header=TRUE)
-</code></pre>
-<p>After reading the columns, two columns: revol_util  and int_rate have % signs. We don’t want R to interpret it as character strings. Hence, we can convert to character strings and getting rid of the ‘%’ and then back to numeric.</p>
-<pre><code>lendingData$revol_util &lt;- as.character(lendingData$revol_util)
-lendingData$revol_util &lt;- sub("%", "", lendingData$revol_util)
-lendingData$revol_util &lt;- as.numeric(lendingData$revol_util)
-lendingData$int_rate &lt;- as.character(lendingData$int_rate)
-lendingData$int_rate &lt;- sub("%", "", lendingData$int_rate)
-lendingData$int_rate &lt;- as.numeric(lendingData$int_rate)
-</code></pre>
-<p>Formatting the columns for date data and specifying the first of the month since the data only has month and year.</p>
-<pre><code>dateColumns &lt;- c("issue_d", "last_pymnt_d", "next_pymnt_d", "last_credit_pull_d",
-             "sec_app_earliest_cr_line", "hardship_start_date", "hardship_end_date",
-             "payment_plan_start_date", "debt_settlement_flag_date", "settlement_date",
-             "earliest_cr_line")
-</code></pre>
-<p>Using function strptime(x, format), where x is a character vector of dates and format is a character string of the dates, using percent symbols with characters to specify what types of date and time information.%d: Day of the month as decimal number (01--31)%b: Abbreviated month name in the current locale on this platform%Y: Year with century   e.g.: 2015</p>
-<pre><code>lendingData[,dateColumns] &lt;- apply(lendingData[,dateColumns], 2, function(x) {
-strptime(paste("1", x), "%d %b-%Y")})
-
-lendingData[,dateColumns] &lt;- apply(lendingData[,dateColumns], 2, function(x) {
-strptime(paste("1", x), "%d %b-%Y")})
-</code></pre>
-<p>Saving the file as R object for faster loading. Then counting the number of each loan status.</p>
-<pre><code>save(lendingData, file="LoanStats2017Q3.rda")
-
-load("LoanStats2017Q3.rda")
-
-(table(lendingData$loan_status))
-
-# Charged Off            Current            Default         Fully Paid    In Grace Period 
-#    12876                65816                161              40471                752 
-# Late (16-30 days) Late (31-120 days) 
-#      503                2122
-</code></pre></div>
+<h2 id="summary"><b><span style="font-family: Book Antiqua; font-size: 1em;">Summary</b></h2>
+<p><span style="font-family: Times New Roman; font-size: 1.2em;">The motivation behind the project was to capture sentiments of people (both familiar and unfamiliar) related to the novel coronavirus and to get some hands-on practice with pandas and Tableau. The resulting data is a slightly biased since it was only collected for the aforementioned purposes.</p>
+<h2 id="survey"><b><span style="font-family: Book Antiqua; font-size: 1em;">Survey</b></h2>
+<p><span style="font-family: Times New Roman; font-size: 1.2em;">The survey was sent to people, mostly friends and family in the US, India &amp; Canada, stuck at home during the pandemic. A total of 114 people responded. The survey had 8 questions:</p>
+<p></b><span style="font-family: Book Antiqua; font-size: 1em;"><b>Q1. What is your occupation? </b></p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Student</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Professional</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Home-maker</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Retired</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Other (free text field)</p>
+<p></b><span style="font-family: Book Antiqua; font-size: 1em;"><b>Q2. Where do you spend most of your free time?</b> (all are fixed values)</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Streaming services (Netflix, Amazon Prime, Youtube)</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Gaming (Mobile, Xbox, Nintendo)</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Online Courses (Coursera, LinkedIn Learning, Udemy)</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Social Media (Twitter, Instagram, Facebook)</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Working (I'm a workaholic !)</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Other (Gardening, Cooking, Sleeping)</p>
+<p></b><span style="font-family: Book Antiqua; font-size: 1em;"><b>Q3. How much time do you spend on streaming services?</b></p>
+<p></b><span style="font-family: Book Antiqua; font-size: 1em;"><b>Q4. How much time do you spend on gaming?</b></p>
+<p></b><span style="font-family: Book Antiqua; font-size: 1em;"><b>Q5. How much time do you spend on social media?</b></p>
+<p></b><span style="font-family: Book Antiqua; font-size: 1em;">Questions 3, 4 &amp; 5 all have fixed values: &lt; 1 hour, 1 - 3 hours &amp; &gt; 3 hours</p>
+<p></b><span style="font-family: Book Antiqua; font-size: 1em;"><b>Q6. What are you most worried about during this time?</b></p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Job</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Family</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Economy</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Job</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Being stuck at home</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Other (free text field)</p>
+<p></b><span style="font-family: Book Antiqua; font-size: 1em;"><b>Q7. ONE word that describes your mood right now.</b></p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* (free text field)</p>
+<p></b><span style="font-family: Book Antiqua; font-size: 1em;"><b>Q8. Where are you located ?</b></p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* India</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* US</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">* Other (free text field)</p>
+<p><span style="font-family: Book Antiqua; font-size: 1em;">The last question was added later that should explain the NULLs. All questions were mandatory questions except for Q3, Q4 &amp; Q5.</span></p></div>
             </div>
         </div>
 
@@ -252,5 +222,5 @@ load("LoanStats2017Q3.rda")
 
 <!--
 MkDocs version : 1.1
-Build Date UTC : 2020-04-13 23:25:13
+Build Date UTC : 2020-04-14 04:09:26
 -->
